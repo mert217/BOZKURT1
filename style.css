@@ -1,0 +1,10 @@
+#ogretDiv input {
+    width: 300px;  /* input genişliği */
+    font-size: 16px;
+    padding: 5px;
+}
+
+#ogretDiv button {
+    font-size: 16px;
+    padding: 5px 10px;
+}

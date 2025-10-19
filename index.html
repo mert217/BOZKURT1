@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bozkurt Yapay Zeka</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>BOZKURT</h1>
+  
+  <textarea id="bilgi" placeholder="Bir şey yaz..." rows="6" cols="60"></textarea><br>
+  <button onclick="gonder()">Gönder</button>
+  
+  <p id="sonuc"></p>
+
+  <!-- Öğretme alanı -->
+  <div id="ogretDiv" style="display:none; margin-top:10px;">
+    <input type="text" id="ogretInput" placeholder="Cevabı yaz...">
+    <button onclick="ogret()">Öğret</button>
+  </div>
+
+  <script>
+    let sonMesaj = "";
+
+    async function gonder(){
+      const bilgi = document.getElementById("bilgi").value;
+      sonMesaj = bilgi;
+      const resp = await fetch("/ogren", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({bilgi})
+      });
+      const text = await resp.text();
+      document.getElementById("sonuc").innerText = text;
+
+      if(text.includes("Bilmiyorum")){
+        document.getElementById("ogretDiv").style.display = "inline-block"; // yanyana
+      } else {
+        document.getElementById("ogretDiv").style.display = "none";
+      }
+      document.getElementById("bilgi").value = "";
+    }
+
+    async function ogret(){
+      const cevap = document.getElementById("ogretInput").value;
+      if(!cevap) return;
+      await fetch("/ogren", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ogret: sonMesaj, cevap})
+      });
+      document.getElementById("sonuc").innerText = "Tamam, öğrendim!";
+      document.getElementById("ogretInput").value = "";
+      document.getElementById("ogretDiv").style.display = "none";
+    }
+  </script>
+</body>
+</html>
